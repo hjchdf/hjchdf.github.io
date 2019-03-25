@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>DaFu&#39;s Bolg</title>
+  
+  <subtitle>勇者大福的博客</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://hjchdf.github.io/"/>
+  <updated>2019-03-25T12:19:39.881Z</updated>
+  <id>https://hjchdf.github.io/</id>
+  
+  <author>
+    <name>DaFu</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Hello World!</title>
+    <link href="https://hjchdf.github.io/2019/03/25/Hello-World/"/>
+    <id>https://hjchdf.github.io/2019/03/25/Hello-World/</id>
+    <published>2019-03-25T11:33:09.000Z</published>
+    <updated>2019-03-25T12:19:39.881Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="关于本博客"><a href="#关于本博客" class="headerlink" title="关于本博客"></a>关于本博客</h1><ul><li>年轻人的第一个博客，目前只搭建了最基础的功能，后面会逐步完善</li><li>此处是本人对日常探索的一个记录，认知范围内如有错误，非常欢迎指正(目前还没有评论系统，邮箱地址在<code>About</code>中)</li><li>之前有写笔记的习惯，但没有分享出来过，听说分享的过程可以加深记忆</li><li>更多感想等写到20篇的时候再谈</li></ul><h1 id="特别鸣谢"><a href="#特别鸣谢" class="headerlink" title="特别鸣谢"></a>特别鸣谢</h1><ul><li>感谢<a href="https://itwanggj.github.io/about/" target="_blank" rel="noopener">Guojun Wang 同学</a>，他关于搭建博客的<a href="https://itwanggj.github.io/2015/12/24/%E4%BD%BF%E7%94%A8GitHub%20+%20Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" target="_blank" rel="noopener">博文</a>给了我很大的帮助</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;关于本博客&quot;&gt;&lt;a href=&quot;#关于本博客&quot; class=&quot;headerlink&quot; title=&quot;关于本博客&quot;&gt;&lt;/a&gt;关于本博客&lt;/h1&gt;&lt;ul&gt;
+&lt;li&gt;年轻人的第一个博客，目前只搭建了最基础的功能，后面会逐步完善&lt;/li&gt;
+&lt;li&gt;此处是本人对日常探索的一
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
