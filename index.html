@@ -91,6 +91,281 @@ if (isWX) {
     <div class="outer">
       <section id="main">
   
+    <article id="post-Vim总结-1-Text-Objects" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/04/21/Vim总结-1-Text-Objects/" class="article-date">
+  <time datetime="2019-04-21T08:58:24.000Z" itemprop="datePublished">2019-04-21</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/21/Vim总结-1-Text-Objects/">Vim总结(1): Text Objects</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <!-- toc -->
+<ul>
+<li><a href="#vim总结1-text-objects">Vim总结(1): Text Objects</a></li>
+<li><a href="#reference">Reference</a></li>
+<li><a href="#概述">概述</a></li>
+<li><a href="#命令结构">命令结构</a></li>
+<li><a href="#text-construct范围">Text Construct范围</a><ul>
+<li><a href="#关键字">关键字</a></li>
+<li><a href="#word">word</a></li>
+<li><a href="#sentence">Sentence</a></li>
+<li><a href="#paragraph">Paragraph</a></li>
+</ul>
+</li>
+<li><a href="#programming-language-text-objects">Programming Language Text Objects</a><ul>
+<li><a href="#字符串">字符串</a></li>
+<li><a href="#括号">括号</a></li>
+<li><a href="#标记语言的标签">标记语言的标签</a></li>
+</ul>
+</li>
+<li><a href="#vim-scripts-provideing-additional-text-objects">Vim Scripts Provideing Additional Text Objects</a></li>
+</ul>
+<!-- tocstop -->
+<h1><span id="vim总结1-text-objects">Vim总结(1): Text Objects</span></h1><ul>
+<li><p>对Vim中Text Object操作模式的归纳</p>
+</li>
+<li><p>之前对<a href="http://learnvimscriptthehardway.stevelosh.com/" target="_blank" rel="noopener">Learn Vimscript the Hard Way</a> 中<code>ciw</code>很疑惑，于是学习了相关内容</p>
+<blockquote>
+<p>这本书有中文翻译，<a href="http://learnvimscriptthehardway.onefloweroneworld.com/" target="_blank" rel="noopener">网页版</a>,，也可以参考<a href="https://www.w3cschool.cn/vim/nckx1pu0.html" target="_blank" rel="noopener">W3Cschool上的</a>，后者的章节跳转比较方便</p>
+</blockquote>
+</li>
+</ul>
+<h1><span id="reference">Reference</span></h1><ul>
+<li><p>声明：本文参考以下文章，仅为个人笔记，不作商业用途，侵删</p>
+</li>
+<li><p><a href="https://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/" target="_blank" rel="noopener">Vim Text Objects: The Definitive Guide</a></p>
+</li>
+</ul>
+<h1><span id="概述">概述</span></h1><blockquote>
+<p>text objects 字面应指代被选择的文本对象，此处为了方便表述，也指代使用这些文本对象时的选择模式。</p>
+</blockquote>
+<ul>
+<li><p>相较于多数编辑器以单个<strong>字符</strong>为单位的编辑方式，Vim可以将编辑对象扩展到单词、句子、段落(<code>word, setence, paragraph</code>)，提高编辑效率。这种更高级的上下文选择模式被称<strong>text objects</strong>。</p>
+<blockquote>
+<p>例如：<code>ciw</code>删除当前单词后进入插入模式</p>
+</blockquote>
+</li>
+<li><p>Vim对纯文本和多种编程语言都可以应用text objects，此外还可以通过Vim Script自定义新的text objects.</p>
+</li>
+</ul>
+<h1><span id="命令结构">命令结构</span></h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;number&gt;&lt;command&gt;&lt;text object or motion&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>number</strong>: optional，多次执行命令/对多个text objects对象执行操作<ul>
+<li>Vim固定用法，例如：<code>2dd</code>删除下面2行</li>
+</ul>
+</li>
+<li><strong>command</strong>: 编辑操作，例如change, delete(cut), or yank(copy)</li>
+<li><strong>text object</strong> or <strong>motion</strong>: 指定操作范围<ul>
+<li>可以是文本对象(text construct), e.g., word, sentence, paragraph，各种括号引号</li>
+<li>也可以是移动命令(motion), e.g., foward a line, back one page, end of the line</li>
+</ul>
+</li>
+</ul>
+<h1><span id="text-construct范围">Text Construct范围</span></h1><h2><span id="关键字">关键字</span></h2><p>text construct 可以添加关键字进行更精准的范围选择：</p>
+<ol>
+<li><code>i</code>：仅选择text construct，不包括空格</li>
+<li><code>a</code>：选择text construct，包括<strong>后面的空格</strong></li>
+</ol>
+<h2><span id="word">word</span></h2><ul>
+<li><p>Vim对<code>word</code>的定义(w)：</p>
+<blockquote>
+<p>A word consists of a sequence of letters, digits, and underscores, or a sequence of other non_blank characters, separated with white space (spaces, tabs, <eol>). </eol></p>
+<p>This can be changed with the <code>iskeyword</code> option. </p>
+<p>An empty line is also considered to be a word.</p>
+</blockquote>
+</li>
+<li><p>Vim对<code>WORD</code>的定义(W):</p>
+<blockquote>
+<p>A WORD consists of a sequence of non-blank characters, separated with white sapce.</p>
+<p>An empty line is also cnosidered to be a WORD.</p>
+</blockquote>
+</li>
+<li><p><strong>总结，<code>word</code>包含字母、数字、下划线和少数不常用字符，可以参考<code>C</code>的命名规则，<code>WORD</code>只要没有空格就行</strong></p>
+</li>
+<li><p>演示: 使用移动命令<code>w</code>，前进一个word; <code>W</code>,前进一个WORD</p>
+<ul>
+<li>original：<ul>
+<li><img src="/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD1.png" alt="word-and-WORD1.png"></li>
+</ul>
+</li>
+<li><p><code>w(lowercase)</code></p>
+<ul>
+<li><img src="/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD2.png" alt="word-and-WORD2.png"></li>
+</ul>
+</li>
+<li><p><code>ww(lowercase*2)</code></p>
+<ul>
+<li><img src="/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD3.png" alt="word-and-WORD3.png"></li>
+</ul>
+</li>
+<li><code>W(uppercase)</code><ul>
+<li><img src="/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD4.png" alt="word-and-WORD4.png"></li>
+<li>or <img src="/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD5.png" alt="word-and-WORD5.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2><span id="sentence">Sentence</span></h2><ul>
+<li><p>Vim对<code>sentence</code>的定义(s)</p>
+<blockquote>
+<p>A sentence is defined as ending at a <code>.</code>, <code>!</code>, or <code>?</code> followed by a line, or by a space,  or tab. Any number or closing <code>)</code>, <code>]</code>, <code>&quot;</code>, and <code>&#39;</code> characters may appear  after the <code>.</code>, <code>!</code> or <code>?</code> before the space, tab or end of line.</p>
+<p>A paragraph and section boundary is also a setence boundary.</p>
+</blockquote>
+</li>
+<li><p><strong>sentence以<code>.</code>, <code>!</code>, <code>?</code>结束，后面可以包含任意右括号，最后以空格、tab、行尾 分隔。</strong></p>
+</li>
+<li><p>演示</p>
+<blockquote>
+<p>注意：最后一个字符（e.g. 空格），默认没有反向高亮，<code>as</code>会包含后方空格</p>
+</blockquote>
+<ul>
+<li><p>origin</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/sentence_original.png" alt="sentence_origin.png"></p>
+</li>
+<li><p><code>vis</code></p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/sentence_vis.png" alt="sentence_vis.png"></p>
+</li>
+<li><p><code>vas</code></p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/sentence_vas.png" alt="sentence_vas.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2><span id="paragraph">Paragraph</span></h2><ul>
+<li><p>Vim对<code>paragraph</code>的定义(p):</p>
+<blockquote>
+<p>A paragraph begins after each empty line, and also at each of a set of paragraph macros, specified by the pairs of characters in the     paragraphs` option.</p>
+</blockquote>
+</li>
+<li><p><strong>平时使用中可以认为，parragraph以空行开始</strong></p>
+</li>
+<li><p>演示：</p>
+<ul>
+<li><p>origin</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/paragraph_origin.png" alt="paragraph_origin.png"></p>
+</li>
+<li><p><code>vip</code></p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/paragraph_vip.png" alt="paragraph_vip.png"></p>
+</li>
+<li><p><code>vap</code></p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/paragraph_vap.png" alt="paragraph_vap.png"></p>
+<blockquote>
+<p>注意，此处第13行是被选中的，没有高亮反转</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h1><span id="programming-language-text-objects">Programming Language Text Objects</span></h1><p>text objects 在编程语言中的常见用法</p>
+<h2><span id="字符串">字符串</span></h2><ul>
+<li><p><code>a&quot;</code> – a double quoted string(包含两端双引号，下同)</p>
+</li>
+<li><p><code>i&quot;</code> – inner double quoted string(不包含两端双引号，下同)</p>
+</li>
+<li><p><code>a&#39;</code> – a single quoted string</p>
+</li>
+<li><p><code>a&#39;</code> – inner single quoted string</p>
+</li>
+<li><p><code>a`</code> – a back quoted string</p>
+</li>
+<li><p><code>i`</code> – innner a back quoted stirng</p>
+</li>
+<li><p>演示，以<code>&quot;</code>为例，下面的类似，不作重复演示</p>
+<ul>
+<li><p>origin：</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/quote_origin.png" alt="quote_origin"></p>
+</li>
+<li><p><code>vi&quot;d</code> – 只删除引号内部</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/quote_i.png" alt="quote_i"></p>
+</li>
+<li><p><code>va&quot;d</code> – 删除引号+内部+后方括号</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/quote_a.png" alt="quote_a"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2><span id="括号">括号</span></h2><ul>
+<li>Parentheses<ul>
+<li><code>a)</code> – a parenthesized block</li>
+<li><code>i)</code> – inner parentheized block</li>
+</ul>
+</li>
+<li>Brackets<ul>
+<li><code>a]</code> – a bracketed block</li>
+<li><code>i]</code> –  inner bracketed block</li>
+</ul>
+</li>
+<li>Braces<ul>
+<li><code>a}</code> – a brace block</li>
+<li><code>i}</code> – inner brace block</li>
+</ul>
+</li>
+</ul>
+<h2><span id="标记语言的标签">标记语言的标签</span></h2><blockquote>
+<p>Markup Language Tags</p>
+</blockquote>
+<ul>
+<li><p>orgin:</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_origin.png" alt="html_origin"></p>
+</li>
+<li><p><code>at</code> – a tag block</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_vit.png" alt="html_vit"></p>
+</li>
+<li><p><code>it</code> – inner tag block</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_vat.png" alt="html_vat"></p>
+</li>
+<li><p>origin:</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_greater_origin.png" alt="html_greater_origin"></p>
+</li>
+<li><p><code>a&gt;</code> – a single tag</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_greater_vit.png" alt="html_greater_vit"></p>
+</li>
+<li><p><code>i&gt;</code> – inner single tag</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_greater_vat.png" alt="html_greater_vat"></p>
+</li>
+</ul>
+<h1><span id="vim-scripts-provideing-additional-text-objects">Vim Scripts Provideing Additional Text Objects</span></h1><blockquote>
+<p>此部分暂未用到，请参考原文</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vim/">Vim</a></li></ul>
+
+        <a data-url="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/" data-id="cjuqra9m60002iovqifnpptwg" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-应届生入职流程和注意事项" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2019/03/25/应届生入职流程和注意事项/" class="article-date">
@@ -116,15 +391,50 @@ if (isWX) {
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h1><ul>
+        <!-- toc -->
+<ul>
+<li><a href="#声明">声明</a></li>
+<li><a href="#概述">概述</a></li>
+<li><a href="#关于offer">关于offer</a></li>
+<li><a href="#关于三方">关于三方</a><ul>
+<li><a href="#前言">前言</a></li>
+<li><a href="#三方定义">三方定义</a></li>
+<li><a href="#作用">作用</a></li>
+<li><a href="#流程">流程</a></li>
+<li><a href="#解约">解约</a></li>
+<li><a href="#注意事项">注意事项</a></li>
+<li><a href="#参考">参考</a></li>
+</ul>
+</li>
+<li><a href="#关于实习试用">关于实习/试用</a></li>
+<li><a href="#其他参考备注">其他参考备注</a></li>
+<li><a href="#档案和户口">档案和户口</a><ul>
+<li><a href="#定义">定义</a></li>
+<li><a href="#性质">性质</a></li>
+<li><a href="#作用-1">作用</a></li>
+<li><a href="#毕业后档案去向">毕业后档案去向</a></li>
+<li><a href="#关于档案挂靠">关于档案挂靠</a><ul>
+<li><a href="#when">when</a></li>
+<li><a href="#why">Why</a></li>
+<li><a href="#qa">Q&amp;A</a></li>
+<li><a href="#others">Others</a></li>
+</ul>
+</li>
+<li><a href="#挂靠入户流程">挂靠入户流程</a></li>
+</ul>
+</li>
+<li><a href="#todo">TODO</a></li>
+</ul>
+<!-- tocstop -->
+<h1><span id="声明">声明</span></h1><ul>
 <li>本文为笔者在毕业前的归纳分享，希望能帮到后面的同学们。</li>
 <li>本文参考了很多地方，参考地址已经标注，侵删，联系方式在<code>About me</code>中。</li>
 <li>本文仅为分享，不作商业用途，如果能帮上您，笔者深感荣幸。另，非常感谢参考地址中作者们的详尽解答，他们的回答是本文基础，还有很多细节文中并未提及，有兴趣请移步原文。</li>
 </ul>
-<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>一般流程为：面试/笔试(数轮) -&gt; offer -&gt; 三方 -&gt; 劳动合同</p>
+<h1><span id="概述">概述</span></h1><p>一般流程为：面试/笔试(数轮) -&gt; offer -&gt; 三方 -&gt; 劳动合同</p>
 <p>注意：很多公司会要求学生先进行<strong>全职实习</strong>，待毕业后签订劳动合同，一般实习期可以抵扣后面的试用期</p>
 <p><img src="/2019/03/25/应届生入职流程和注意事项/images/毕业流程.jpg" alt="毕业流程"></p>
-<h1 id="关于offer"><a href="#关于offer" class="headerlink" title="关于offer"></a>关于offer</h1><blockquote>
+<h1><span id="关于offer">关于offer</span></h1><blockquote>
 <p>公司的offer是<strong>具有法律效力的要约</strong>，即向应聘者发出的签订劳动合同的请求。</p>
 <p>根据《中华人民共和国合同法》规定，受要约人有理由认为要约是不可撤销的，并已经为履行合同作了准备工作的，要约不得撤消。应聘者为了实现订立劳动合同的目的，已经辞去了原先的职务，即已经为履行劳动合同作了准备工作。这份要约公司已经不能撤消了。如果要撤消，必须承担因此给应聘者带来的损失。</p>
 </blockquote>
@@ -166,8 +476,8 @@ if (isWX) {
 </ol>
 </li>
 </ul>
-<h1 id="关于三方"><a href="#关于三方" class="headerlink" title="关于三方"></a>关于三方</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>三方</code>很重要，但不是非签不可。签三方时一定要明确条款，有疑问及时询问HR。</p>
-<h2 id="三方定义"><a href="#三方定义" class="headerlink" title="三方定义"></a>三方定义</h2><ul>
+<h1><span id="关于三方">关于三方</span></h1><h2><span id="前言">前言</span></h2><p><code>三方</code>很重要，但不是非签不可。签三方时一定要明确条款，有疑问及时询问HR。</p>
+<h2><span id="三方定义">三方定义</span></h2><ul>
 <li><p>三方是<strong>毕业生</strong>、<strong>用人单位</strong>、<strong>学校</strong>这三方。三方协议即《普通高等学校毕业生、毕业研究生就业协议书》（不同地区命名不一样），是毕业生、用人单位、学校这三方，就学生毕业就业一事所达成的协议，用来明确在就业过程中各自的权利与义务。</p>
 </li>
 <li><p>三方具有<strong>唯一性</strong>，即是带有编号的，一人一号，学生不能同时与多个企业签订三方</p>
@@ -189,7 +499,7 @@ if (isWX) {
 <p><img src="/2019/03/25/应届生入职流程和注意事项/images/diff_三方_劳动合同.jpg" alt="diff_三方_劳动合同"></p>
 </li>
 </ul>
-<h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><ul>
+<h2><span id="作用">作用</span></h2><ul>
 <li>对学生<ol>
 <li>保障第一份工作，避免“毕业即失业”</li>
 <li>约定薪酬待遇，保障自身权益</li>
@@ -207,12 +517,12 @@ if (isWX) {
 </ol>
 </li>
 </ul>
-<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><ul>
+<h2><span id="流程">流程</span></h2><ul>
 <li>签署三方需要<strong>学生、学校、企业</strong>签字/加盖公章。</li>
 <li>同时，在签约的过程中，需仔细阅读三方协议详细要求，并在与企业约定并协商好相关条件与要求之后，再进行签署，切勿盲目跟着企业的节奏走。</li>
 </ul>
 <p><img src="/2019/03/25/应届生入职流程和注意事项/images/三方流程.jpg" alt="三方流程"></p>
-<h2 id="解约"><a href="#解约" class="headerlink" title="解约"></a>解约</h2><blockquote>
+<h2><span id="解约">解约</span></h2><blockquote>
 <p>三方节约较麻烦，会有违约金，也会涉及到个人立场、规划、诚信。</p>
 </blockquote>
 <ul>
@@ -281,7 +591,7 @@ if (isWX) {
 </ul>
 </li>
 </ul>
-<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<h2><span id="注意事项">注意事项</span></h2><ol>
 <li><p>备注栏</p>
 <ul>
 <li><p>现行的毕业生就业协议属“<strong>格式合同</strong>”，但“备注”部分一定要注意，<strong>备注里是允许三方另行约定各自的权利义务</strong>，一些用人单位备注啥也不写的，就要稍加斟酌是否是在逃避某些责任或义务。</p>
@@ -302,7 +612,7 @@ if (isWX) {
 </ul>
 </li>
 </ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<h2><span id="参考">参考</span></h2><ol>
 <li><p><a href="https://zhuanlan.zhihu.com/p/35287404" target="_blank" rel="noopener">HR：我就喜欢那些对「三方协议」一无所知的大学生。 - 阿熊学长的文章 - 知乎</a></p>
 <blockquote>
 <p>此部分主要参考下文，十分感谢。</p>
@@ -314,7 +624,7 @@ if (isWX) {
 </blockquote>
 </li>
 </ol>
-<h1 id="关于实习-试用"><a href="#关于实习-试用" class="headerlink" title="关于实习/试用"></a>关于实习/试用</h1><ul>
+<h1><span id="关于实习试用">关于实习/试用</span></h1><ul>
 <li><p>需要分清的概念有实习期/ 试用期/ 见习期，应届生主要接触的有前2种</p>
 <p><img src="/2019/03/25/应届生入职流程和注意事项/images/实习期VS见习期VS试用期.jpg" alt="实习期VS见习期VS试用期"></p>
 </li>
@@ -376,24 +686,24 @@ if (isWX) {
 </ol>
 </li>
 </ul>
-<h1 id="其他参考备注"><a href="#其他参考备注" class="headerlink" title="其他参考备注"></a>其他参考备注</h1><ol>
+<h1><span id="其他参考备注">其他参考备注</span></h1><ol>
 <li><p><a href="https://www.zhihu.com/question/35895097/answer/65350485" target="_blank" rel="noopener">三方协议到底是什么？对于应届生来讲，有哪些权利与义务？ - 逍遥天涯人的回答 - 知乎</a></p>
 <blockquote>
 <p>使用其中部分绿底图片</p>
 </blockquote>
 </li>
 </ol>
-<h1 id="档案和户口"><a href="#档案和户口" class="headerlink" title="档案和户口"></a>档案和户口</h1><blockquote>
+<h1><span id="档案和户口">档案和户口</span></h1><blockquote>
 <p>此部分参考：<a href="https://zhuanlan.zhihu.com/p/53452038" target="_blank" rel="noopener">这“档”子事不处理好，高薪offer也不管用！ - 阿熊学长的文章 - 知乎</a></p>
 </blockquote>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><ul>
+<h2><span id="定义">定义</span></h2><ul>
 <li><strong>毕业生的学籍档案</strong>是指通过参加全国统一考试并被录取的大中专及以上院校学生的档案。<ul>
 <li>它以文字资料的形式记录了高考成绩、在校学习成绩、家庭状况、在校期间表现和奖惩情况等。</li>
 </ul>
 </li>
 <li><strong>毕业生的人事档案</strong>由学籍档案转换而来，是指毕业生毕业后，与用人单位（含人才）签订就业协议后，在其学籍档案中<strong>放入该毕业生的就业通知书</strong>。然后由学校将档案转交毕业生就业单位的人事部门或委托的人才交流机构。</li>
 </ul>
-<h2 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h2><p><strong>毕业生档案是用人单位选拔、聘用毕业生的重要依据。</strong></p>
+<h2><span id="性质">性质</span></h2><p><strong>毕业生档案是用人单位选拔、聘用毕业生的重要依据。</strong></p>
 <ol>
 <li><strong>内容</strong>：《高校毕业生登记表》、《学习成绩表》、在校期间的一切奖惩情况；入团、入党志愿书等政治历史情况的审核材料、毕业离校前的体检表等</li>
 <li><p>档案袋必须<strong>密封保存</strong>，密封处加盖接收单位公章，拆开就失效</p>
@@ -401,7 +711,7 @@ if (isWX) {
 <li><p>国家规定，档案是不能自带的，也不能拆开的，<strong>必须挂靠在有人事接收权的单位</strong>，例如：人才市场、事业单位、国企、公务员等机构，才能享受人事服务</p>
 </li>
 </ol>
-<h2 id="作用-1"><a href="#作用-1" class="headerlink" title="作用"></a>作用</h2><ol>
+<h2><span id="作用">作用</span></h2><ol>
 <li><p>转正定级，获取干部身份；</p>
 </li>
 <li><p>考研；</p>
@@ -419,7 +729,7 @@ if (isWX) {
 <li>入团入党。</li>
 </ol>
 <p><img src="/2019/03/25/应届生入职流程和注意事项/images/档案作用.jpg" alt="档案作用"></p>
-<h2 id="毕业后档案去向"><a href="#毕业后档案去向" class="headerlink" title="毕业后档案去向"></a>毕业后档案去向</h2><ol>
+<h2><span id="毕业后档案去向">毕业后档案去向</span></h2><ol>
 <li><p><strong>暂留学校</strong></p>
 <p>如果毕业时没有及时找到合适的工作（或考研、考公）可在校<strong>申请暂缓就业</strong>；</p>
 <p>在<strong>两年</strong>内找到工作的，及时办理取消暂缓手续，迁至工作单位或挂靠在人才市场。（即使档案暂放学校，保留学生身份，两年后你仍需要迁出档案）</p>
@@ -444,7 +754,7 @@ if (isWX) {
 </ol>
 <p><strong>*谨记：人事档案不允许个人持有，否则会成为“死档”。*</strong></p>
 <p><img src="/2019/03/25/应届生入职流程和注意事项/images/档案去向.jpg" alt="档案去向"></p>
-<h2 id="关于档案挂靠"><a href="#关于档案挂靠" class="headerlink" title="关于档案挂靠"></a>关于档案挂靠</h2><h3 id="when"><a href="#when" class="headerlink" title="when"></a>when</h3><blockquote>
+<h2><span id="关于档案挂靠">关于档案挂靠</span></h2><h3><span id="when">when</span></h3><blockquote>
 <p>此处广州、深圳等地仅为原文举例</p>
 <p>总结：想要一个自己可控的管理档案的地方</p>
 </blockquote>
@@ -458,7 +768,7 @@ if (isWX) {
 <li>要出国了，户口还想留广州/深圳等地，免得打回原籍；</li>
 <li>暂缓到期了，档案就要回原籍的往届毕业生。</li>
 </ol>
-<h3 id="Why"><a href="#Why" class="headerlink" title="Why"></a>Why</h3><ul>
+<h3><span id="why">Why</span></h3><ul>
 <li><p>办理挂靠后，你可以放心到市内外一切非国有单位或无人事主管部门的单位工作，而你的合法权益和应有的社会地位同时得到保障。</p>
 </li>
 <li><p>应届大学生档案挂靠后，可以享受以下<strong>服务</strong>：</p>
@@ -472,7 +782,7 @@ if (isWX) {
 </ol>
 </li>
 </ul>
-<h3 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h3><ol>
+<h3><span id="qampa">Q&amp;A</span></h3><ol>
 <li>是否必须挂靠档案？<ul>
 <li>否，但毕业生挂靠档案可以算处理档案最省时省力的方法，且一般城市挂靠档案后会有相应福利（有的可以落户，一线城市的户口不必多说），所以建议挂靠。</li>
 </ul>
@@ -493,12 +803,12 @@ if (isWX) {
 </ul>
 </li>
 </ol>
-<h3 id="Others"><a href="#Others" class="headerlink" title="Others"></a>Others</h3><p>原文有提到党籍转移，有需要的同学请移步原文。</p>
-<h2 id="挂靠入户流程"><a href="#挂靠入户流程" class="headerlink" title="挂靠入户流程"></a>挂靠入户流程</h2><blockquote>
+<h3><span id="others">Others</span></h3><p>原文有提到党籍转移，有需要的同学请移步原文。</p>
+<h2><span id="挂靠入户流程">挂靠入户流程</span></h2><blockquote>
 <p>以原文广州为例</p>
 </blockquote>
 <p><img src="/2019/03/25/应届生入职流程和注意事项/images/挂靠及入户广州所需的流程及材料.jpg" alt="挂靠及入户广州所需的流程及材料"></p>
-<h1 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h1><ol>
+<h1><span id="todo">TODO</span></h1><ol>
 <li><p>劳动合同</p>
 <blockquote>
 <p>此部分稍后补充，可以参考<a href="https://www.zhihu.com/question/20907019" target="_blank" rel="noopener">签署劳动合同时应该注意哪些问题？ - 知乎</a></p>
@@ -513,7 +823,7 @@ if (isWX) {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/常识/">常识</a></li></ul>
 
-        <a data-url="https://hjchdf.github.io/2019/03/25/应届生入职流程和注意事项/" data-id="cjumndryd000248vqh9xds44u" class="article-share-link">Share</a>
+        <a data-url="https://hjchdf.github.io/2019/03/25/应届生入职流程和注意事项/" data-id="cjuqra9nn0005iovqmokwqzou" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -551,13 +861,13 @@ if (isWX) {
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="关于本博客"><a href="#关于本博客" class="headerlink" title="关于本博客"></a>关于本博客</h1><ul>
+        <h1><span id="关于本博客">关于本博客</span></h1><ul>
 <li>年轻人的第一个博客，目前只搭建了最基础的功能，后面会逐步完善</li>
 <li>此处是本人对日常探索的一个记录，认知范围内如有错误，非常欢迎指正(目前还没有评论系统，邮箱地址在<code>About</code>中)</li>
 <li>之前有写笔记的习惯，但没有分享出来过，听说分享的过程可以加深记忆</li>
 <li>更多感想等写到20篇的时候再谈</li>
 </ul>
-<h1 id="特别鸣谢"><a href="#特别鸣谢" class="headerlink" title="特别鸣谢"></a>特别鸣谢</h1><ul>
+<h1><span id="特别鸣谢">特别鸣谢</span></h1><ul>
 <li>感谢<a href="https://itwanggj.github.io/about/" target="_blank" rel="noopener">Guojun Wang 同学</a>，他关于搭建博客的<a href="https://itwanggj.github.io/2015/12/24/%E4%BD%BF%E7%94%A8GitHub%20+%20Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" target="_blank" rel="noopener">博文</a>给了我很大的帮助</li>
 </ul>
 
@@ -566,7 +876,7 @@ if (isWX) {
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://hjchdf.github.io/2019/03/25/Hello-World/" data-id="cjumndrxn000148vquqku0om6" class="article-share-link">Share</a>
+        <a data-url="https://hjchdf.github.io/2019/03/25/Hello-World/" data-id="cjuqra9m00000iovqly04mo7j" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -591,6 +901,10 @@ if (isWX) {
       <ul>
         
           <li>
+            <a href="/2019/04/21/Vim总结-1-Text-Objects/">Vim总结(1): Text Objects</a>
+          </li>
+        
+          <li>
             <a href="/2019/03/25/应届生入职流程和注意事项/">应届生入职流程和注意事项</a>
           </li>
         
@@ -607,7 +921,7 @@ if (isWX) {
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/常识/">常识</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vim/">Vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/常识/">常识</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -616,7 +930,7 @@ if (isWX) {
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 

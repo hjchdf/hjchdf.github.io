@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <title>Vim总结(1): Text Objects | DaFu&#39;s Bolg</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Vim总结(1): Text Objects Reference 概述 命令结构 Text Construct范围 关键字 word Sentence Paragraph   Programming Language Text Objects 字符串 括号 标记语言的标签   Vim Scripts Provideing Additional Text Objects   Vim总结(1):">
+<meta name="keywords" content="Vim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vim总结(1): Text Objects">
+<meta property="og:url" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/index.html">
+<meta property="og:site_name" content="DaFu&#39;s Bolg">
+<meta property="og:description" content="Vim总结(1): Text Objects Reference 概述 命令结构 Text Construct范围 关键字 word Sentence Paragraph   Programming Language Text Objects 字符串 括号 标记语言的标签   Vim Scripts Provideing Additional Text Objects   Vim总结(1):">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD1.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD2.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD3.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD4.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD5.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/sentence_original.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/sentence_vis.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/sentence_vas.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/paragraph_origin.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/paragraph_vip.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/paragraph_vap.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/quote_origin.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/quote_i.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/quote_a.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/html_origin.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/html_vit.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/html_vat.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/html_greater_origin.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/html_greater_vit.png">
+<meta property="og:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/html_greater_vat.png">
+<meta property="og:updated_time" content="2019-04-21T09:55:16.129Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vim总结(1): Text Objects">
+<meta name="twitter:description" content="Vim总结(1): Text Objects Reference 概述 命令结构 Text Construct范围 关键字 word Sentence Paragraph   Programming Language Text Objects 字符串 括号 标记语言的标签   Vim Scripts Provideing Additional Text Objects   Vim总结(1):">
+<meta name="twitter:image" content="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD1.png">
+  
+    <link rel="alternative" href="/atom.xml" title="DaFu&#39;s Bolg" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link href="//fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+<script type="text/javascript">
+var isWX = /micromessenger/i.test(navigator.userAgent);
+if (isWX) {
+  document.write('<br/><br/><h1 style="text-align: center;font-size:32px;" >╮(╯_╰)╭</h1><br/><br/><h4 style="text-align: center;" >请在浏览器中打开。</h4><br/><h4 style="text-align: center;" >Please open in the browser.</h4>');
+  window.stop ? window.stop() : document.execCommand("Stop");
+}
+</script>
+
+
+</head>
+</html>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/hjchdf"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">DaFu Blog</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">DaFu</li>
+        <li class="cara">S</li>
+        <li class="cara">M</li>
+        <li class="cara">I</li>
+        <li class="cara">L</li>
+        <li class="cara">E</li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/about">About</a>
+      
+      <!-- <a class="main-nav-link st-search-show-outputs">Search</a> -->
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-Vim总结-1-Text-Objects" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/04/21/Vim总结-1-Text-Objects/" class="article-date">
+  <time datetime="2019-04-21T08:58:24.000Z" itemprop="datePublished">2019-04-21</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vim总结(1): Text Objects
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <!-- toc -->
+<ul>
+<li><a href="#vim总结1-text-objects">Vim总结(1): Text Objects</a></li>
+<li><a href="#reference">Reference</a></li>
+<li><a href="#概述">概述</a></li>
+<li><a href="#命令结构">命令结构</a></li>
+<li><a href="#text-construct范围">Text Construct范围</a><ul>
+<li><a href="#关键字">关键字</a></li>
+<li><a href="#word">word</a></li>
+<li><a href="#sentence">Sentence</a></li>
+<li><a href="#paragraph">Paragraph</a></li>
+</ul>
+</li>
+<li><a href="#programming-language-text-objects">Programming Language Text Objects</a><ul>
+<li><a href="#字符串">字符串</a></li>
+<li><a href="#括号">括号</a></li>
+<li><a href="#标记语言的标签">标记语言的标签</a></li>
+</ul>
+</li>
+<li><a href="#vim-scripts-provideing-additional-text-objects">Vim Scripts Provideing Additional Text Objects</a></li>
+</ul>
+<!-- tocstop -->
+<h1><span id="vim总结1-text-objects">Vim总结(1): Text Objects</span></h1><ul>
+<li><p>对Vim中Text Object操作模式的归纳</p>
+</li>
+<li><p>之前对<a href="http://learnvimscriptthehardway.stevelosh.com/" target="_blank" rel="noopener">Learn Vimscript the Hard Way</a> 中<code>ciw</code>很疑惑，于是学习了相关内容</p>
+<blockquote>
+<p>这本书有中文翻译，<a href="http://learnvimscriptthehardway.onefloweroneworld.com/" target="_blank" rel="noopener">网页版</a>,，也可以参考<a href="https://www.w3cschool.cn/vim/nckx1pu0.html" target="_blank" rel="noopener">W3Cschool上的</a>，后者的章节跳转比较方便</p>
+</blockquote>
+</li>
+</ul>
+<h1><span id="reference">Reference</span></h1><ul>
+<li><p>声明：本文参考以下文章，仅为个人笔记，不作商业用途，侵删</p>
+</li>
+<li><p><a href="https://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/" target="_blank" rel="noopener">Vim Text Objects: The Definitive Guide</a></p>
+</li>
+</ul>
+<h1><span id="概述">概述</span></h1><blockquote>
+<p>text objects 字面应指代被选择的文本对象，此处为了方便表述，也指代使用这些文本对象时的选择模式。</p>
+</blockquote>
+<ul>
+<li><p>相较于多数编辑器以单个<strong>字符</strong>为单位的编辑方式，Vim可以将编辑对象扩展到单词、句子、段落(<code>word, setence, paragraph</code>)，提高编辑效率。这种更高级的上下文选择模式被称<strong>text objects</strong>。</p>
+<blockquote>
+<p>例如：<code>ciw</code>删除当前单词后进入插入模式</p>
+</blockquote>
+</li>
+<li><p>Vim对纯文本和多种编程语言都可以应用text objects，此外还可以通过Vim Script自定义新的text objects.</p>
+</li>
+</ul>
+<h1><span id="命令结构">命令结构</span></h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;number&gt;&lt;command&gt;&lt;text object or motion&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>number</strong>: optional，多次执行命令/对多个text objects对象执行操作<ul>
+<li>Vim固定用法，例如：<code>2dd</code>删除下面2行</li>
+</ul>
+</li>
+<li><strong>command</strong>: 编辑操作，例如change, delete(cut), or yank(copy)</li>
+<li><strong>text object</strong> or <strong>motion</strong>: 指定操作范围<ul>
+<li>可以是文本对象(text construct), e.g., word, sentence, paragraph，各种括号引号</li>
+<li>也可以是移动命令(motion), e.g., foward a line, back one page, end of the line</li>
+</ul>
+</li>
+</ul>
+<h1><span id="text-construct范围">Text Construct范围</span></h1><h2><span id="关键字">关键字</span></h2><p>text construct 可以添加关键字进行更精准的范围选择：</p>
+<ol>
+<li><code>i</code>：仅选择text construct，不包括空格</li>
+<li><code>a</code>：选择text construct，包括<strong>后面的空格</strong></li>
+</ol>
+<h2><span id="word">word</span></h2><ul>
+<li><p>Vim对<code>word</code>的定义(w)：</p>
+<blockquote>
+<p>A word consists of a sequence of letters, digits, and underscores, or a sequence of other non_blank characters, separated with white space (spaces, tabs, <eol>). </eol></p>
+<p>This can be changed with the <code>iskeyword</code> option. </p>
+<p>An empty line is also considered to be a word.</p>
+</blockquote>
+</li>
+<li><p>Vim对<code>WORD</code>的定义(W):</p>
+<blockquote>
+<p>A WORD consists of a sequence of non-blank characters, separated with white sapce.</p>
+<p>An empty line is also cnosidered to be a WORD.</p>
+</blockquote>
+</li>
+<li><p><strong>总结，<code>word</code>包含字母、数字、下划线和少数不常用字符，可以参考<code>C</code>的命名规则，<code>WORD</code>只要没有空格就行</strong></p>
+</li>
+<li><p>演示: 使用移动命令<code>w</code>，前进一个word; <code>W</code>,前进一个WORD</p>
+<ul>
+<li>original：<ul>
+<li><img src="/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD1.png" alt="word-and-WORD1.png"></li>
+</ul>
+</li>
+<li><p><code>w(lowercase)</code></p>
+<ul>
+<li><img src="/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD2.png" alt="word-and-WORD2.png"></li>
+</ul>
+</li>
+<li><p><code>ww(lowercase*2)</code></p>
+<ul>
+<li><img src="/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD3.png" alt="word-and-WORD3.png"></li>
+</ul>
+</li>
+<li><code>W(uppercase)</code><ul>
+<li><img src="/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD4.png" alt="word-and-WORD4.png"></li>
+<li>or <img src="/2019/04/21/Vim总结-1-Text-Objects/images/word-and-WORD5.png" alt="word-and-WORD5.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2><span id="sentence">Sentence</span></h2><ul>
+<li><p>Vim对<code>sentence</code>的定义(s)</p>
+<blockquote>
+<p>A sentence is defined as ending at a <code>.</code>, <code>!</code>, or <code>?</code> followed by a line, or by a space,  or tab. Any number or closing <code>)</code>, <code>]</code>, <code>&quot;</code>, and <code>&#39;</code> characters may appear  after the <code>.</code>, <code>!</code> or <code>?</code> before the space, tab or end of line.</p>
+<p>A paragraph and section boundary is also a setence boundary.</p>
+</blockquote>
+</li>
+<li><p><strong>sentence以<code>.</code>, <code>!</code>, <code>?</code>结束，后面可以包含任意右括号，最后以空格、tab、行尾 分隔。</strong></p>
+</li>
+<li><p>演示</p>
+<blockquote>
+<p>注意：最后一个字符（e.g. 空格），默认没有反向高亮，<code>as</code>会包含后方空格</p>
+</blockquote>
+<ul>
+<li><p>origin</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/sentence_original.png" alt="sentence_origin.png"></p>
+</li>
+<li><p><code>vis</code></p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/sentence_vis.png" alt="sentence_vis.png"></p>
+</li>
+<li><p><code>vas</code></p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/sentence_vas.png" alt="sentence_vas.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2><span id="paragraph">Paragraph</span></h2><ul>
+<li><p>Vim对<code>paragraph</code>的定义(p):</p>
+<blockquote>
+<p>A paragraph begins after each empty line, and also at each of a set of paragraph macros, specified by the pairs of characters in the     paragraphs` option.</p>
+</blockquote>
+</li>
+<li><p><strong>平时使用中可以认为，parragraph以空行开始</strong></p>
+</li>
+<li><p>演示：</p>
+<ul>
+<li><p>origin</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/paragraph_origin.png" alt="paragraph_origin.png"></p>
+</li>
+<li><p><code>vip</code></p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/paragraph_vip.png" alt="paragraph_vip.png"></p>
+</li>
+<li><p><code>vap</code></p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/paragraph_vap.png" alt="paragraph_vap.png"></p>
+<blockquote>
+<p>注意，此处第13行是被选中的，没有高亮反转</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h1><span id="programming-language-text-objects">Programming Language Text Objects</span></h1><p>text objects 在编程语言中的常见用法</p>
+<h2><span id="字符串">字符串</span></h2><ul>
+<li><p><code>a&quot;</code> – a double quoted string(包含两端双引号，下同)</p>
+</li>
+<li><p><code>i&quot;</code> – inner double quoted string(不包含两端双引号，下同)</p>
+</li>
+<li><p><code>a&#39;</code> – a single quoted string</p>
+</li>
+<li><p><code>a&#39;</code> – inner single quoted string</p>
+</li>
+<li><p><code>a`</code> – a back quoted string</p>
+</li>
+<li><p><code>i`</code> – innner a back quoted stirng</p>
+</li>
+<li><p>演示，以<code>&quot;</code>为例，下面的类似，不作重复演示</p>
+<ul>
+<li><p>origin：</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/quote_origin.png" alt="quote_origin"></p>
+</li>
+<li><p><code>vi&quot;d</code> – 只删除引号内部</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/quote_i.png" alt="quote_i"></p>
+</li>
+<li><p><code>va&quot;d</code> – 删除引号+内部+后方括号</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/quote_a.png" alt="quote_a"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2><span id="括号">括号</span></h2><ul>
+<li>Parentheses<ul>
+<li><code>a)</code> – a parenthesized block</li>
+<li><code>i)</code> – inner parentheized block</li>
+</ul>
+</li>
+<li>Brackets<ul>
+<li><code>a]</code> – a bracketed block</li>
+<li><code>i]</code> –  inner bracketed block</li>
+</ul>
+</li>
+<li>Braces<ul>
+<li><code>a}</code> – a brace block</li>
+<li><code>i}</code> – inner brace block</li>
+</ul>
+</li>
+</ul>
+<h2><span id="标记语言的标签">标记语言的标签</span></h2><blockquote>
+<p>Markup Language Tags</p>
+</blockquote>
+<ul>
+<li><p>orgin:</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_origin.png" alt="html_origin"></p>
+</li>
+<li><p><code>at</code> – a tag block</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_vit.png" alt="html_vit"></p>
+</li>
+<li><p><code>it</code> – inner tag block</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_vat.png" alt="html_vat"></p>
+</li>
+<li><p>origin:</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_greater_origin.png" alt="html_greater_origin"></p>
+</li>
+<li><p><code>a&gt;</code> – a single tag</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_greater_vit.png" alt="html_greater_vit"></p>
+</li>
+<li><p><code>i&gt;</code> – inner single tag</p>
+<p><img src="/2019/04/21/Vim总结-1-Text-Objects/images/html_greater_vat.png" alt="html_greater_vat"></p>
+</li>
+</ul>
+<h1><span id="vim-scripts-provideing-additional-text-objects">Vim Scripts Provideing Additional Text Objects</span></h1><blockquote>
+<p>此部分暂未用到，请参考原文</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vim/">Vim</a></li></ul>
+
+        <a data-url="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/" data-id="cjuqra9m60002iovqifnpptwg" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/03/25/应届生入职流程和注意事项/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">应届生入职流程和注意事项</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/04/21/Vim总结-1-Text-Objects/">Vim总结(1): Text Objects</a>
+          </li>
+        
+          <li>
+            <a href="/2019/03/25/应届生入职流程和注意事项/">应届生入职流程和注意事项</a>
+          </li>
+        
+          <li>
+            <a href="/2019/03/25/Hello-World/">Hello World!</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vim/">Vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/常识/">常识</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 DaFu<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>
