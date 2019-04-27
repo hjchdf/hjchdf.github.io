@@ -91,6 +91,116 @@ if (isWX) {
     <div class="outer">
       <section id="main">
   
+    <article id="post-Ubuntu18-04安装谷歌拼音" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/04/27/Ubuntu18-04安装谷歌拼音/" class="article-date">
+  <time datetime="2019-04-27T13:27:51.000Z" itemprop="datePublished">2019-04-27</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Ubuntu18-04安装谷歌拼音/">Ubuntu18.04安装谷歌拼音</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <!-- toc -->
+<ul>
+<li><a href="#概述">概述</a></li>
+<li><a href="#reference">Reference</a></li>
+<li><a href="#过程">过程</a></li>
+<li><a href="#todo">TODO</a></li>
+</ul>
+<!-- tocstop -->
+<h1><span id="概述">概述</span></h1><ul>
+<li>记录常用配置过程，方便后期查看，仅限于本人环境的操作记录</li>
+<li>仅作为本人笔记记录，不作商业用途，侵删</li>
+<li>环境：<ul>
+<li>VMware 15</li>
+<li>Ubuntu 18.04</li>
+</ul>
+</li>
+</ul>
+<h1><span id="reference">Reference</span></h1><ol>
+<li><a href="https://segmentfault.com/a/1190000009266105" target="_blank" rel="noopener">ubuntu 16.04下google输入法的安装设置</a></li>
+<li><a href="https://ywnz.com/linuxjc/2891.html" target="_blank" rel="noopener">在Ubuntu18.04系统中安装谷歌拼音输入法（Google Pinyin）</a></li>
+<li><a href="http://dongyado.com/linux/tool/2015/05/23/install-google-pinyin-on-ubuntu/" target="_blank" rel="noopener">ubuntu下安装谷歌拼音（有些坑估计都踩过）</a></li>
+</ol>
+<h1><span id="过程">过程</span></h1><ol>
+<li><p>安装<code>fcitx</code>和google拼音，本人环境中默认是<code>ibus</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> sudo apt-get install fcitx fcitx-googlepinyin im-config</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置输入法(Input Method Configuration)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> im-config</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>出现以下窗口</p>
+<p><img src="/2019/04/27/Ubuntu18-04安装谷歌拼音/im-config001.png" alt="im-config001"></p>
+</li>
+<li><p>ok</p>
+<p><img src="/2019/04/27/Ubuntu18-04安装谷歌拼音/im-config002.png" alt="im-config002"></p>
+</li>
+<li><p>Yes，然后选择<code>fcitx</code></p>
+<p><img src="/2019/04/27/Ubuntu18-04安装谷歌拼音/im-config003.png" alt="im-config003"></p>
+</li>
+<li><p>ok后退出即可</p>
+<p><img src="/2019/04/27/Ubuntu18-04安装谷歌拼音/im-config004.png" alt="im-config004"></p>
+</li>
+<li><p>返回桌面，出现如下标识，如果没有，重启，再者参考<a href="http://dongyado.com/linux/tool/2015/05/23/install-google-pinyin-on-ubuntu/" target="_blank" rel="noopener">ubuntu下安装谷歌拼音（有些坑估计都踩过）</a>中操作</p>
+<p><img src="/2019/04/27/Ubuntu18-04安装谷歌拼音/keyboard-config001.png" alt="keyboard-config001"></p>
+</li>
+<li><p>添加Google拼音</p>
+<p><img src="/2019/04/27/Ubuntu18-04安装谷歌拼音/keyboard-config002.png" alt="keyboard-config002"></p>
+<p><img src="/2019/04/27/Ubuntu18-04安装谷歌拼音/keyboard-config003.png" alt="keyboard-config003"></p>
+</li>
+<li><p>按喜好调整输入法顺序</p>
+<p><img src="/2019/04/27/Ubuntu18-04安装谷歌拼音/keyboard-config004.png" alt="keyboard-config004"></p>
+</li>
+<li><p>快捷键，默认<code>Ctrl+space</code>切换输入法</p>
+<p><img src="/2019/04/27/Ubuntu18-04安装谷歌拼音/keyboard-config005.png" alt="keyboard-config005"></p>
+</li>
+</ul>
+</li>
+</ol>
+<h1><span id="todo">TODO</span></h1><ol>
+<li><p>卸载输入法</p>
+</li>
+<li><p>系统语言是否对输入法有影响（添加中文简体，后删除，目前正常）</p>
+<p><img src="/2019/04/27/Ubuntu18-04安装谷歌拼音/systemSetting.png" alt="systemSetting"></p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/环境配置/">环境配置</a></li></ul>
+
+        <a data-url="https://hjchdf.github.io/2019/04/27/Ubuntu18-04安装谷歌拼音/" data-id="cjuzl5inf0002gwvqkj8f8cmd" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Vim总结-1-Text-Objects" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2019/04/21/Vim总结-1-Text-Objects/" class="article-date">
@@ -353,7 +463,7 @@ if (isWX) {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vim/">Vim</a></li></ul>
 
-        <a data-url="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/" data-id="cjuqra9m60002iovqifnpptwg" class="article-share-link">Share</a>
+        <a data-url="https://hjchdf.github.io/2019/04/21/Vim总结-1-Text-Objects/" data-id="cjuzl5inh0003gwvq2uou75ic" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -823,7 +933,7 @@ if (isWX) {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/常识/">常识</a></li></ul>
 
-        <a data-url="https://hjchdf.github.io/2019/03/25/应届生入职流程和注意事项/" data-id="cjuqra9nn0005iovqmokwqzou" class="article-share-link">Share</a>
+        <a data-url="https://hjchdf.github.io/2019/03/25/应届生入职流程和注意事项/" data-id="cjuzl5iny000agwvqwg57bn8s" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -876,7 +986,7 @@ if (isWX) {
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://hjchdf.github.io/2019/03/25/Hello-World/" data-id="cjuqra9m00000iovqly04mo7j" class="article-share-link">Share</a>
+        <a data-url="https://hjchdf.github.io/2019/03/25/Hello-World/" data-id="cjuzl5in90000gwvq5s3uhxf3" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -901,6 +1011,10 @@ if (isWX) {
       <ul>
         
           <li>
+            <a href="/2019/04/27/Ubuntu18-04安装谷歌拼音/">Ubuntu18.04安装谷歌拼音</a>
+          </li>
+        
+          <li>
             <a href="/2019/04/21/Vim总结-1-Text-Objects/">Vim总结(1): Text Objects</a>
           </li>
         
@@ -921,7 +1035,7 @@ if (isWX) {
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vim/">Vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/常识/">常识</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vim/">Vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/常识/">常识</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -930,7 +1044,7 @@ if (isWX) {
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
